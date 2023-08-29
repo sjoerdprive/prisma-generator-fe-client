@@ -1,17 +1,15 @@
-#!/usr/bin/env node
 import { generatorHandler } from "@prisma/generator-helper";
 import * as fs from "fs/promises";
 import * as path from "path";
 import { renderTemplate } from "./helpers/renderTemplate";
-
-console.log("calling generator");
+import { writeIndex } from "./helpers/writeIndex";
 
 generatorHandler({
   onManifest() {
     return {
       version: "1",
       defaultOutput: "../generated",
-      prettyName: "ts-client",
+      prettyName: "prisma-fe-client",
     };
   },
   async onGenerate(opts) {
@@ -20,6 +18,8 @@ generatorHandler({
       await fs.rm(clientsDir, { force: true, recursive: true });
 
       await fs.mkdir(clientsDir);
+
+      const generatedClients: string[] = [];
 
       for (const model of opts.dmmf.datamodel.models) {
         const renderedTemplate = await renderTemplate({
@@ -30,11 +30,20 @@ generatorHandler({
           },
         });
 
+        const clientName = `${model.name}Client`;
+
+        generatedClients.push(clientName);
+
         await fs.writeFile(
-          path.resolve(clientsDir, `./${model.name}Client.ts`),
+          path.resolve(clientsDir, `./${clientName}.ts`),
           renderedTemplate
         );
       }
+
+      await fs.writeFile(
+        path.resolve(clientsDir, `./index.ts`),
+        writeIndex(generatedClients)
+      );
     } catch (err) {
       console.log(err);
     }
