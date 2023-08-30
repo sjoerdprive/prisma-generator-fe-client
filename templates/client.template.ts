@@ -12,24 +12,26 @@ type UpdateArgsData = Prisma.Without<
 > &
   Prisma.__Model__UncheckedUpdateInput;
 
-class __Model__Client {
-  private baseURL: string;
+export class __Model__CRUD {
+  protected baseURL: string;
+  protected headers: Record<string, any>;
 
-  constructor(baseUrl: string) {
+  constructor(baseUrl: string, accessToken?: string | null) {
     this.baseURL = baseUrl;
+    this.headers = {
+      ...(!!accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    };
   }
 
   async create__Model__(data: CreateArgsData): Promise<__Model__ | null> {
     try {
       const response = await fetch(`${this.baseURL}/__model__`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { ...this.headers, "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
       if (response.ok) {
-        return response.json();
+        return response.json() as Promise<__Model__>;
       }
       return null;
     } catch (error) {
@@ -40,9 +42,11 @@ class __Model__Client {
 
   async get__Model__ById(id: string): Promise<__Model__ | null> {
     try {
-      const response = await fetch(`${this.baseURL}/__model__/${id}`);
+      const response = await fetch(`${this.baseURL}/__model__/${id}`, {
+        headers: this.headers,
+      });
       if (response.ok) {
-        return response.json();
+        return response.json() as Promise<__Model__>;
       }
       return null;
     } catch (error) {
@@ -51,20 +55,54 @@ class __Model__Client {
     }
   }
 
+  async getMany__Model__s(ids: string[]): Promise<__Model__[]> {
+    try {
+      const response = await fetch(`${this.baseURL}/__model__/many`, {
+        method: "POST",
+        headers: { ...this.headers, "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+
+      if (response.ok) {
+        return response.json() as Promise<__Model__[]>;
+      }
+      return [];
+    } catch (error) {
+      console.error("Error getting many __model__s:", error);
+      return [];
+    }
+  }
+
+  async getAll__Model__s(): Promise<__Model__[]> {
+    try {
+      const response = await fetch(`${this.baseURL}/__model__/all`, {
+        headers: this.headers,
+      });
+      if (response.ok) {
+        return response.json() as Promise<__Model__[]>;
+      }
+      return [];
+    } catch (error) {
+      console.error("Error getting __model__s:", error);
+      return [];
+    }
+  }
+
   async update__Model__(
     id: string,
     updatedData: UpdateArgsData
   ): Promise<__Model__ | null> {
     try {
-      const response = await fetch(`${this.baseURL}/__model__s/${id}`, {
+      const response = await fetch(`${this.baseURL}/__model__/${id}`, {
         method: "PUT",
         headers: {
+          ...this.headers,
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedData),
       });
       if (response.ok) {
-        return response.json();
+        return response.json() as Promise<__Model__>;
       }
       return null;
     } catch (error) {
@@ -77,6 +115,9 @@ class __Model__Client {
     try {
       const response = await fetch(`${this.baseURL}/__model__/${id}`, {
         method: "DELETE",
+        headers: {
+          ...this.headers,
+        },
       });
       return response.ok;
     } catch (error) {
@@ -85,5 +126,3 @@ class __Model__Client {
     }
   }
 }
-
-export default __Model__Client;

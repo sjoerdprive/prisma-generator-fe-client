@@ -30,7 +30,7 @@ generatorHandler({
           },
         });
 
-        const clientName = `${model.name}Client`;
+        const clientName = `${model.name}CRUD`;
 
         generatedClients.push(clientName);
 
