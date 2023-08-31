@@ -29,6 +29,7 @@ export class __Model__CRUD {
         method: "POST",
         headers: { ...this.headers, "Content-Type": "application/json" },
         body: JSON.stringify(data),
+        mode: "cors",
       });
       if (response.ok) {
         return response.json() as Promise<__Model__>;
@@ -44,6 +45,7 @@ export class __Model__CRUD {
     try {
       const response = await fetch(`${this.baseURL}/__model__/${id}`, {
         headers: this.headers,
+        mode: "cors",
       });
       if (response.ok) {
         return response.json() as Promise<__Model__>;
@@ -61,6 +63,7 @@ export class __Model__CRUD {
         method: "POST",
         headers: { ...this.headers, "Content-Type": "application/json" },
         body: JSON.stringify({ ids }),
+        mode: "cors",
       });
 
       if (response.ok) {
@@ -77,6 +80,7 @@ export class __Model__CRUD {
     try {
       const response = await fetch(`${this.baseURL}/__model__/all`, {
         headers: this.headers,
+        mode: "cors",
       });
       if (response.ok) {
         return response.json() as Promise<__Model__[]>;
@@ -100,6 +104,7 @@ export class __Model__CRUD {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updatedData),
+        mode: "cors",
       });
       if (response.ok) {
         return response.json() as Promise<__Model__>;
@@ -118,6 +123,7 @@ export class __Model__CRUD {
         headers: {
           ...this.headers,
         },
+        mode: "cors",
       });
       return response.ok;
     } catch (error) {
