@@ -1,12 +1,12 @@
 import { __Model__, Prisma } from "@prisma/client";
 
-type CreateArgsData = Prisma.Without<
+export type Create__Model__ArgsData = Prisma.Without<
   Prisma.__Model__CreateInput,
   Prisma.__Model__UncheckedCreateInput
 > &
   Prisma.__Model__UncheckedCreateInput;
 
-type UpdateArgsData = Prisma.Without<
+export type Update__Model__ArgsData = Prisma.Without<
   Prisma.__Model__UpdateInput,
   Prisma.__Model__UncheckedUpdateInput
 > &
@@ -23,7 +23,7 @@ export class __Model__CRUD {
     };
   }
 
-  async create__Model__(data: CreateArgsData): Promise<__Model__ | null> {
+  async create__Model__(data: Create__Model__ArgsData): Promise<__Model__ | null> {
     try {
       const response = await fetch(`${this.baseURL}/__model__`, {
         method: "POST",
@@ -94,7 +94,7 @@ export class __Model__CRUD {
 
   async update__Model__(
     id: string,
-    updatedData: UpdateArgsData
+    updatedData: Update__Model__ArgsData
   ): Promise<__Model__ | null> {
     try {
       const response = await fetch(`${this.baseURL}/__model__/${id}`, {
